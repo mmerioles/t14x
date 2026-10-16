@@ -17,11 +17,21 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git
+          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3-tk
+
+      - name: Test diagnostic mapping
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Test keyboard core
+        run: |
+          mkdir -p build
+          cc -std=c11 -Wall -Wextra -Werror -Ifirmware tests/keyboard_core_test.c firmware/keyboard_core.c firmware/keymap.c -o build/keyboard_core_tests
+          ./build/keyboard_core_tests
+          python3 tools/generate_keymap.py --check
 
       - name: Install Pico SDK
         run: |
-          sudo git clone https://github.com/raspberrypi/pico-sdk.git $PICO_SDK_PATH
+          sudo git clone --depth 1 --branch 2.2.0 https://github.com/raspberrypi/pico-sdk.git $PICO_SDK_PATH
           sudo chown -R $USER:$USER $PICO_SDK_PATH
           cd $PICO_SDK_PATH
           git submodule update --init
@@ -32,3 +42,10 @@ jobs:
           cd build
           cmake ..
           make -j$(nproc)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t14-firmware
+          path: |
+            build/t14_keyboard.uf2
+            build/t14_diagnostics.uf2

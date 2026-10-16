@@ -1,3 +1,8 @@
 build/*
 !build/.gitkeep
+.venv/
+.tools/
+__pycache__/
+diagnostic-results/
+/t14-20*/
 

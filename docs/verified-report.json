@@ -1,0 +1,1130 @@
+{
+  "created_utc": "2026-10-16T04:59:55.066994+00:00",
+  "reference": "https://github.com/delingren/thinkpad_keyboards/blob/main/t14-v1.md",
+  "wiring": {
+    "11": 0,
+    "12": 1,
+    "17": 2,
+    "18": 3,
+    "19": 4,
+    "20": 5,
+    "21": 6,
+    "22": 7,
+    "23": 8,
+    "24": 9,
+    "25": 10,
+    "26": 11,
+    "27": 12,
+    "28": 13,
+    "29": 14,
+    "30": 15,
+    "31": 16,
+    "32": 17,
+    "33": 18,
+    "34": 19,
+    "35": 20,
+    "36": 21,
+    "37": 22,
+    "38": 26,
+    "39": 27,
+    "40": 28
+  },
+  "metadata": {
+    "mode": "hardware",
+    "description": "User supplied complete T14 Gen 1 press-and-release test, 84 of 84 passed. TrackPoint not tested."
+  },
+  "keys": {
+    "Esc": {
+      "expected": [
+        29,
+        34
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          29,
+          34
+        ]
+      ]
+    },
+    "F1": {
+      "expected": [
+        28,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          32
+        ]
+      ]
+    },
+    "F2": {
+      "expected": [
+        30,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          32
+        ]
+      ]
+    },
+    "F3": {
+      "expected": [
+        30,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          40
+        ]
+      ]
+    },
+    "F4": {
+      "expected": [
+        29,
+        30
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          29,
+          30
+        ]
+      ]
+    },
+    "F5": {
+      "expected": [
+        18,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          29
+        ]
+      ]
+    },
+    "F6": {
+      "expected": [
+        24,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          29
+        ]
+      ]
+    },
+    "F7": {
+      "expected": [
+        26,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          40
+        ]
+      ]
+    },
+    "F8": {
+      "expected": [
+        26,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          32
+        ]
+      ]
+    },
+    "F9": {
+      "expected": [
+        18,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          32
+        ]
+      ]
+    },
+    "F10": {
+      "expected": [
+        18,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          35
+        ]
+      ]
+    },
+    "F11": {
+      "expected": [
+        19,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          19,
+          35
+        ]
+      ]
+    },
+    "F12": {
+      "expected": [
+        21,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          21,
+          35
+        ]
+      ]
+    },
+    "Home": {
+      "expected": [
+        20,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          20,
+          32
+        ]
+      ]
+    },
+    "End": {
+      "expected": [
+        20,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          20,
+          35
+        ]
+      ]
+    },
+    "Insert": {
+      "expected": [
+        21,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          21,
+          32
+        ]
+      ]
+    },
+    "Delete": {
+      "expected": [
+        19,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          19,
+          32
+        ]
+      ]
+    },
+    "`": {
+      "expected": [
+        32,
+        34
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          32,
+          34
+        ]
+      ]
+    },
+    "1": {
+      "expected": [
+        34,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          34,
+          35
+        ]
+      ]
+    },
+    "2": {
+      "expected": [
+        28,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          35
+        ]
+      ]
+    },
+    "3": {
+      "expected": [
+        30,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          35
+        ]
+      ]
+    },
+    "4": {
+      "expected": [
+        27,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          35
+        ]
+      ]
+    },
+    "5": {
+      "expected": [
+        27,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          32
+        ]
+      ]
+    },
+    "6": {
+      "expected": [
+        31,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          32
+        ]
+      ]
+    },
+    "7": {
+      "expected": [
+        31,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          35
+        ]
+      ]
+    },
+    "8": {
+      "expected": [
+        24,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          35
+        ]
+      ]
+    },
+    "9": {
+      "expected": [
+        26,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          35
+        ]
+      ]
+    },
+    "0": {
+      "expected": [
+        25,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          35
+        ]
+      ]
+    },
+    "-": {
+      "expected": [
+        25,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          32
+        ]
+      ]
+    },
+    "=": {
+      "expected": [
+        24,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          32
+        ]
+      ]
+    },
+    "Backspace": {
+      "expected": [
+        18,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          40
+        ]
+      ]
+    },
+    "Tab": {
+      "expected": [
+        34,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          34,
+          40
+        ]
+      ]
+    },
+    "Q": {
+      "expected": [
+        33,
+        34
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          33,
+          34
+        ]
+      ]
+    },
+    "W": {
+      "expected": [
+        28,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          33
+        ]
+      ]
+    },
+    "E": {
+      "expected": [
+        30,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          33
+        ]
+      ]
+    },
+    "R": {
+      "expected": [
+        27,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          33
+        ]
+      ]
+    },
+    "T": {
+      "expected": [
+        27,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          40
+        ]
+      ]
+    },
+    "Y": {
+      "expected": [
+        31,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          40
+        ]
+      ]
+    },
+    "U": {
+      "expected": [
+        31,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          33
+        ]
+      ]
+    },
+    "I": {
+      "expected": [
+        24,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          33
+        ]
+      ]
+    },
+    "O": {
+      "expected": [
+        26,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          33
+        ]
+      ]
+    },
+    "P": {
+      "expected": [
+        25,
+        33
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          33
+        ]
+      ]
+    },
+    "[": {
+      "expected": [
+        25,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          40
+        ]
+      ]
+    },
+    "]": {
+      "expected": [
+        24,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          40
+        ]
+      ]
+    },
+    "\\": {
+      "expected": [
+        18,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          36
+        ]
+      ]
+    },
+    "Caps Lock": {
+      "expected": [
+        28,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          40
+        ]
+      ]
+    },
+    "A": {
+      "expected": [
+        34,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          34,
+          36
+        ]
+      ]
+    },
+    "S": {
+      "expected": [
+        28,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          36
+        ]
+      ]
+    },
+    "D": {
+      "expected": [
+        30,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          36
+        ]
+      ]
+    },
+    "F": {
+      "expected": [
+        27,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          36
+        ]
+      ]
+    },
+    "G": {
+      "expected": [
+        27,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          29
+        ]
+      ]
+    },
+    "H": {
+      "expected": [
+        29,
+        31
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          29,
+          31
+        ]
+      ]
+    },
+    "J": {
+      "expected": [
+        31,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          36
+        ]
+      ]
+    },
+    "K": {
+      "expected": [
+        24,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          36
+        ]
+      ]
+    },
+    "L": {
+      "expected": [
+        26,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          36
+        ]
+      ]
+    },
+    ";": {
+      "expected": [
+        25,
+        36
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          36
+        ]
+      ]
+    },
+    "'": {
+      "expected": [
+        25,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          29
+        ]
+      ]
+    },
+    "Enter": {
+      "expected": [
+        18,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          38
+        ]
+      ]
+    },
+    "LShift": {
+      "expected": [
+        37,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          37,
+          40
+        ]
+      ]
+    },
+    "Z": {
+      "expected": [
+        34,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          34,
+          38
+        ]
+      ]
+    },
+    "X": {
+      "expected": [
+        28,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "C": {
+      "expected": [
+        30,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          30,
+          38
+        ]
+      ]
+    },
+    "V": {
+      "expected": [
+        27,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          38
+        ]
+      ]
+    },
+    "B": {
+      "expected": [
+        27,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          27,
+          39
+        ]
+      ]
+    },
+    "N": {
+      "expected": [
+        31,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          39
+        ]
+      ]
+    },
+    "M": {
+      "expected": [
+        31,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          31,
+          38
+        ]
+      ]
+    },
+    ",": {
+      "expected": [
+        24,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          24,
+          38
+        ]
+      ]
+    },
+    ".": {
+      "expected": [
+        26,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          26,
+          38
+        ]
+      ]
+    },
+    "/": {
+      "expected": [
+        25,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          25,
+          39
+        ]
+      ]
+    },
+    "RShift": {
+      "expected": [
+        37,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          37,
+          38
+        ]
+      ]
+    },
+    "Fn": {
+      "expected": [
+        11,
+        12
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          11,
+          12
+        ]
+      ]
+    },
+    "LCtrl": {
+      "expected": [
+        23,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          23,
+          32
+        ]
+      ]
+    },
+    "Super": {
+      "expected": [
+        21,
+        40
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          21,
+          40
+        ]
+      ]
+    },
+    "LAlt": {
+      "expected": [
+        22,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          22,
+          29
+        ]
+      ]
+    },
+    "Space": {
+      "expected": [
+        18,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          18,
+          39
+        ]
+      ]
+    },
+    "RAlt": {
+      "expected": [
+        22,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          22,
+          39
+        ]
+      ]
+    },
+    "PrtSc": {
+      "expected": [
+        22,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          22,
+          35
+        ]
+      ]
+    },
+    "RCtrl": {
+      "expected": [
+        23,
+        38
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          23,
+          38
+        ]
+      ]
+    },
+    "PgUp": {
+      "expected": [
+        17,
+        32
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          17,
+          32
+        ]
+      ]
+    },
+    "Up": {
+      "expected": [
+        20,
+        29
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          20,
+          29
+        ]
+      ]
+    },
+    "PgDn": {
+      "expected": [
+        17,
+        35
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          17,
+          35
+        ]
+      ]
+    },
+    "Left": {
+      "expected": [
+        20,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          20,
+          39
+        ]
+      ]
+    },
+    "Down": {
+      "expected": [
+        19,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          19,
+          39
+        ]
+      ]
+    },
+    "Right": {
+      "expected": [
+        21,
+        39
+      ],
+      "status": "pass",
+      "observed": [
+        [
+          21,
+          39
+        ]
+      ]
+    }
+  }
+}

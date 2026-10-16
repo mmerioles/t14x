@@ -1,0 +1,90 @@
+# Verified T14 key map
+
+84/84 keys passed in the latest user-supplied hardware test. Source: [verified-report.json](verified-report.json). Fn is handled locally; all other values below are USB HID Keyboard/Keypad usage IDs.
+
+| Key | FPC contacts | Pico GPIOs | USB usage |
+| :--- | :--- | :--- | :--- |
+| Esc | 29 + 34 | GP14 + GP19 | 0x29 |
+| F1 | 28 + 32 | GP13 + GP17 | 0x3A |
+| F2 | 30 + 32 | GP15 + GP17 | 0x3B |
+| F3 | 30 + 40 | GP15 + GP28 | 0x3C |
+| F4 | 29 + 30 | GP14 + GP15 | 0x3D |
+| F5 | 18 + 29 | GP3 + GP14 | 0x3E |
+| F6 | 24 + 29 | GP9 + GP14 | 0x3F |
+| F7 | 26 + 40 | GP11 + GP28 | 0x40 |
+| F8 | 26 + 32 | GP11 + GP17 | 0x41 |
+| F9 | 18 + 32 | GP3 + GP17 | 0x42 |
+| F10 | 18 + 35 | GP3 + GP20 | 0x43 |
+| F11 | 19 + 35 | GP4 + GP20 | 0x44 |
+| F12 | 21 + 35 | GP6 + GP20 | 0x45 |
+| Home | 20 + 32 | GP5 + GP17 | 0x4A |
+| End | 20 + 35 | GP5 + GP20 | 0x4D |
+| Insert | 21 + 32 | GP6 + GP17 | 0x49 |
+| Delete | 19 + 32 | GP4 + GP17 | 0x4C |
+| &#96; | 32 + 34 | GP17 + GP19 | 0x35 |
+| 1 | 34 + 35 | GP19 + GP20 | 0x1E |
+| 2 | 28 + 35 | GP13 + GP20 | 0x1F |
+| 3 | 30 + 35 | GP15 + GP20 | 0x20 |
+| 4 | 27 + 35 | GP12 + GP20 | 0x21 |
+| 5 | 27 + 32 | GP12 + GP17 | 0x22 |
+| 6 | 31 + 32 | GP16 + GP17 | 0x23 |
+| 7 | 31 + 35 | GP16 + GP20 | 0x24 |
+| 8 | 24 + 35 | GP9 + GP20 | 0x25 |
+| 9 | 26 + 35 | GP11 + GP20 | 0x26 |
+| 0 | 25 + 35 | GP10 + GP20 | 0x27 |
+| - | 25 + 32 | GP10 + GP17 | 0x2D |
+| = | 24 + 32 | GP9 + GP17 | 0x2E |
+| Backspace | 18 + 40 | GP3 + GP28 | 0x2A |
+| Tab | 34 + 40 | GP19 + GP28 | 0x2B |
+| Q | 33 + 34 | GP18 + GP19 | 0x14 |
+| W | 28 + 33 | GP13 + GP18 | 0x1A |
+| E | 30 + 33 | GP15 + GP18 | 0x08 |
+| R | 27 + 33 | GP12 + GP18 | 0x15 |
+| T | 27 + 40 | GP12 + GP28 | 0x17 |
+| Y | 31 + 40 | GP16 + GP28 | 0x1C |
+| U | 31 + 33 | GP16 + GP18 | 0x18 |
+| I | 24 + 33 | GP9 + GP18 | 0x0C |
+| O | 26 + 33 | GP11 + GP18 | 0x12 |
+| P | 25 + 33 | GP10 + GP18 | 0x13 |
+| [ | 25 + 40 | GP10 + GP28 | 0x2F |
+| ] | 24 + 40 | GP9 + GP28 | 0x30 |
+| &#92; | 18 + 36 | GP3 + GP21 | 0x31 |
+| Caps Lock | 28 + 40 | GP13 + GP28 | 0x39 |
+| A | 34 + 36 | GP19 + GP21 | 0x04 |
+| S | 28 + 36 | GP13 + GP21 | 0x16 |
+| D | 30 + 36 | GP15 + GP21 | 0x07 |
+| F | 27 + 36 | GP12 + GP21 | 0x09 |
+| G | 27 + 29 | GP12 + GP14 | 0x0A |
+| H | 29 + 31 | GP14 + GP16 | 0x0B |
+| J | 31 + 36 | GP16 + GP21 | 0x0D |
+| K | 24 + 36 | GP9 + GP21 | 0x0E |
+| L | 26 + 36 | GP11 + GP21 | 0x0F |
+| ; | 25 + 36 | GP10 + GP21 | 0x33 |
+| ' | 25 + 29 | GP10 + GP14 | 0x34 |
+| Enter | 18 + 38 | GP3 + GP26 | 0x28 |
+| LShift | 37 + 40 | GP22 + GP28 | 0xE1 |
+| Z | 34 + 38 | GP19 + GP26 | 0x1D |
+| X | 28 + 38 | GP13 + GP26 | 0x1B |
+| C | 30 + 38 | GP15 + GP26 | 0x06 |
+| V | 27 + 38 | GP12 + GP26 | 0x19 |
+| B | 27 + 39 | GP12 + GP27 | 0x05 |
+| N | 31 + 39 | GP16 + GP27 | 0x11 |
+| M | 31 + 38 | GP16 + GP26 | 0x10 |
+| , | 24 + 38 | GP9 + GP26 | 0x36 |
+| . | 26 + 38 | GP11 + GP26 | 0x37 |
+| / | 25 + 39 | GP10 + GP27 | 0x38 |
+| RShift | 37 + 38 | GP22 + GP26 | 0xE5 |
+| Fn | 11 + 12 | GP0 + GP1 | Local Fn modifier |
+| LCtrl | 23 + 32 | GP8 + GP17 | 0xE0 |
+| Super | 21 + 40 | GP6 + GP28 | 0xE3 |
+| LAlt | 22 + 29 | GP7 + GP14 | 0xE2 |
+| Space | 18 + 39 | GP3 + GP27 | 0x2C |
+| RAlt | 22 + 39 | GP7 + GP27 | 0xE6 |
+| PrtSc | 22 + 35 | GP7 + GP20 | 0x46 |
+| RCtrl | 23 + 38 | GP8 + GP26 | 0xE4 |
+| PgUp | 17 + 32 | GP2 + GP17 | 0x4B |
+| Up | 20 + 29 | GP5 + GP14 | 0x52 |
+| PgDn | 17 + 35 | GP2 + GP20 | 0x4E |
+| Left | 20 + 39 | GP5 + GP27 | 0x50 |
+| Down | 19 + 39 | GP4 + GP27 | 0x51 |
+| Right | 21 + 39 | GP6 + GP27 | 0x4F |
