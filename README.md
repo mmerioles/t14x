@@ -21,7 +21,7 @@ keyboard yet.
 
 Use this repeating 10-color order:
 
-**Brown → Red → Orange → Yellow → Green → Blue → Purple → Gray → White → Black**
+![Brown](docs/wire-colors/brown.svg) → ![Red](docs/wire-colors/red.svg) → ![Orange](docs/wire-colors/orange.svg) → ![Yellow](docs/wire-colors/yellow.svg) → ![Green](docs/wire-colors/green.svg) → ![Blue](docs/wire-colors/blue.svg) → ![Purple](docs/wire-colors/purple.svg) → ![Gray](docs/wire-colors/gray.svg) → ![White](docs/wire-colors/white.svg) → ![Black](docs/wire-colors/black.svg)
 
 Rainbow jumper packs do not all use the same order. Select wires by the color
 in the table, rather than assuming their position in your strip. Violet means
@@ -45,32 +45,32 @@ the GPIO number.
 
 | Wire ID | Color | Keyboard FPC pin | Pico GPIO | Pico physical pin |
 | :--- | :--- | ---: | :--- | ---: |
-| A1 | Brown | 11 | GP0 | 1 |
-| A2 | Red | 12 | GP1 | 2 |
-| A3 | Orange | 17 | GP2 | 4 |
-| A4 | Yellow | 18 | GP3 | 5 |
-| A5 | Green | 19 | GP4 | 6 |
-| A6 | Blue | 20 | GP5 | 7 |
-| A7 | Purple | 21 | GP6 | 9 |
-| A8 | Gray | 22 | GP7 | 10 |
-| A9 | White | 23 | GP8 | 11 |
-| A10 | Black | 24 | GP9 | 12 |
-| B1 | Brown | 25 | GP10 | 14 |
-| B2 | Red | 26 | GP11 | 15 |
-| B3 | Orange | 27 | GP12 | 16 |
-| B4 | Yellow | 28 | GP13 | 17 |
-| B5 | Green | 29 | GP14 | 19 |
-| B6 | Blue | 30 | GP15 | 20 |
-| B7 | Purple | 31 | GP16 | 21 |
-| B8 | Gray | 32 | GP17 | 22 |
-| B9 | White | 33 | GP18 | 24 |
-| B10 | Black | 34 | GP19 | 25 |
-| C1 | Brown | 35 | GP20 | 26 |
-| C2 | Red | 36 | GP21 | 27 |
-| C3 | Orange | 37 | GP22 | 29 |
-| C4 | Yellow | 38 | GP26 | 31 |
-| C5 | Green | 39 | GP27 | 32 |
-| C6 | Blue | 40 | GP28 | 34 |
+| A1 | ![Brown](docs/wire-colors/brown.svg) | 11 | GP0 | 1 |
+| A2 | ![Red](docs/wire-colors/red.svg) | 12 | GP1 | 2 |
+| A3 | ![Orange](docs/wire-colors/orange.svg) | 17 | GP2 | 4 |
+| A4 | ![Yellow](docs/wire-colors/yellow.svg) | 18 | GP3 | 5 |
+| A5 | ![Green](docs/wire-colors/green.svg) | 19 | GP4 | 6 |
+| A6 | ![Blue](docs/wire-colors/blue.svg) | 20 | GP5 | 7 |
+| A7 | ![Purple](docs/wire-colors/purple.svg) | 21 | GP6 | 9 |
+| A8 | ![Gray](docs/wire-colors/gray.svg) | 22 | GP7 | 10 |
+| A9 | ![White](docs/wire-colors/white.svg) | 23 | GP8 | 11 |
+| A10 | ![Black](docs/wire-colors/black.svg) | 24 | GP9 | 12 |
+| B1 | ![Brown](docs/wire-colors/brown.svg) | 25 | GP10 | 14 |
+| B2 | ![Red](docs/wire-colors/red.svg) | 26 | GP11 | 15 |
+| B3 | ![Orange](docs/wire-colors/orange.svg) | 27 | GP12 | 16 |
+| B4 | ![Yellow](docs/wire-colors/yellow.svg) | 28 | GP13 | 17 |
+| B5 | ![Green](docs/wire-colors/green.svg) | 29 | GP14 | 19 |
+| B6 | ![Blue](docs/wire-colors/blue.svg) | 30 | GP15 | 20 |
+| B7 | ![Purple](docs/wire-colors/purple.svg) | 31 | GP16 | 21 |
+| B8 | ![Gray](docs/wire-colors/gray.svg) | 32 | GP17 | 22 |
+| B9 | ![White](docs/wire-colors/white.svg) | 33 | GP18 | 24 |
+| B10 | ![Black](docs/wire-colors/black.svg) | 34 | GP19 | 25 |
+| C1 | ![Brown](docs/wire-colors/brown.svg) | 35 | GP20 | 26 |
+| C2 | ![Red](docs/wire-colors/red.svg) | 36 | GP21 | 27 |
+| C3 | ![Orange](docs/wire-colors/orange.svg) | 37 | GP22 | 29 |
+| C4 | ![Yellow](docs/wire-colors/yellow.svg) | 38 | GP26 | 31 |
+| C5 | ![Green](docs/wire-colors/green.svg) | 39 | GP27 | 32 |
+| C6 | ![Blue](docs/wire-colors/blue.svg) | 40 | GP28 | 34 |
 
 Pico header positions follow the
 [official original Pico pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf).
