@@ -38,10 +38,10 @@ DISPLAY={'LShift':'Shift','RShift':'Shift','LCtrl':'Ctrl','RCtrl':'Ctrl',
          '6':'^\n6','7':'&\n7','8':'*\n8','9':'(\n9','0':')\n0',
          '-':'_\n-','=':'+\n=','[':'{\n[',']':'}\n]','\\':'|\n\\',
          ';':':\n;',"'":'"\n\'',',':'<\n,','.':'>\n.','/':'?\n/'}
-DISPLAY.update({'Esc':'Esc\nFnLock','F1':'Mute\nF1','F2':'Vol −\nF2','F3':'Vol +\nF3',
-                'F4':'Mic\nF4','F5':'☼ −\nF5','F6':'☼ +\nF6','F7':'Display\nF7',
+DISPLAY.update({'Esc':'FnLock\nEsc','F1':'Mute\nF1','F2':'Vol −\nF2','F3':'Vol +\nF3',
+                'F4':'Mic\nF4','F5':'Light −\nF5','F6':'Light +\nF6','F7':'Display\nF7',
                 'F8':'Wi-Fi\nF8','F9':'Settings\nF9','F10':'Call\nF10',
-                'F11':'End call\nF11','F12':'★\nF12'})
+                'F11':'Hang up\nF11','F12':'★\nF12'})
 
 
 class Keyboard(tk.Canvas):
@@ -64,13 +64,28 @@ class Keyboard(tk.Canvas):
                                    x1,y2,x1,y2-r,x1,y1+r,x1,y1,
                                    smooth=True,splinesteps=12,**options)
 
+    def top_row_font(self,unit,vertical):
+        """Largest font that fits every top-row label, so F1-F12 all match."""
+        size=int(min(unit/5.5,11))
+        if not hasattr(self,'_top_font'): self._top_font=tkfont.Font(family='Arial')
+        font=self._top_font; font.configure(size=size)
+        while size>6:
+            fits=all(font.measure(line)<=w*unit-12 and font.metrics('linespace')*len(DISPLAY.get(k,k).split('\n'))<=h*vertical-7
+                     for k,_,y,w,h in KEYS if y==0 for line in DISPLAY.get(k,k).split('\n'))
+            if fits: break
+            size-=1; font.configure(size=size)
+        return font
+
     def draw(self):
         self.delete('all'); self.rectangles={}
-        # Fit both ways: 15 key units across, 6.65 rows (keys plus mouse buttons) down.
+        # Fit both ways: 15 units across, 6.7 rows down (keys plus mouse buttons).
+        # Keys may be up to 10% taller or shorter than wide, to use the space.
         width,height=max(self.winfo_width(),300),max(self.winfo_height(),150)
-        unit=(width-24)/15
-        vertical=min(unit,67,(height-24)/6.65)
-        ox,oy=12,12
+        rows=(height-6)/6.7
+        unit=min((width-4)/15,rows/0.9)
+        vertical=min(unit*1.1,rows)
+        ox,oy=(width-15*unit+5)/2,max(2,(height-6.7*vertical)/2)
+        top_font=self.top_row_font(unit,vertical)
         for key,x,y,w,h in KEYS:
             x1,y1=ox+x*unit,oy+y*vertical
             x2,y2=x1+w*unit-5,y1+h*vertical-3
@@ -85,8 +100,17 @@ class Keyboard(tk.Canvas):
             self.keycap(x1,y1+3,x2,y2+3,fill='#0b0d0f',outline='')
             self.keycap(x1,y1,x2,y2,fill=fill,outline=border,width=thickness)
             label=DISPLAY.get(key,key)
+            if y==0:
+                # One size for the whole top row: function dim above, key name below.
+                lines=label.split('\n')
+                if len(lines)==2:
+                    gap=top_font.metrics('linespace')/2
+                    self.create_text((x1+x2)/2,(y1+y2)/2-gap,text=lines[0],fill='#9aa0a8',font=top_font)
+                    self.create_text((x1+x2)/2,(y1+y2)/2+gap,text=lines[1],fill='#f0f0f0',font=top_font)
+                else: self.create_text((x1+x2)/2,(y1+y2)/2,text=label,fill='#f0f0f0',font=top_font)
+                if result=='pass': self.create_oval(x2-9,y1+5,x2-5,y1+9,fill='#5bd28b',outline='')
+                continue
             size=max(9,int(min(unit/5,14)))
-            if y==0: size=min(size,10)
             font=tkfont.Font(family='Arial',size=size)
             while size>7 and (max(font.measure(line) for line in label.split('\n'))>x2-x1-10
                              or font.metrics('linespace')*len(label.split('\n'))>y2-y1-4):

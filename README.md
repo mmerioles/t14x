@@ -95,13 +95,15 @@ Use [Teensy Loader](https://www.pjrc.com/teensy/loader.html) (on Linux, add the 
 
 ## 3. Test
 
-Flash `t14_diagnostics.hex`. Install [Python](https://www.python.org/downloads/) 3.9+ (on Linux: `sudo apt install python3-tk python3-venv`), [download this project](https://github.com/mmerioles/t14x-/archive/refs/heads/main.zip), and run this in its folder:
+Flash `t14_diagnostics.hex`, install [uv](https://docs.astral.sh/uv/getting-started/installation/), [download this project](https://github.com/mmerioles/t14x-/archive/refs/heads/main.zip), and run this in its folder:
 
-| Windows | macOS / Linux |
-| :--- | :--- |
-| `py run_diagnostics.py` | `python3 run_diagnostics.py` |
+```sh
+uv run diagnostics
+```
 
-Plug in the Teensy. The app starts by itself: press each key it shows, then check the TrackPoint and Lights tabs. Details and troubleshooting are in [docs/diagnostics.md](docs/diagnostics.md).
+uv fetches the right Python and dependencies on first run.
+
+When the light at the top shows **Connected**, press Esc and then each key the app shows. Then check the TrackPoint and Lights tabs. Troubleshooting: [docs/diagnostics.md](docs/diagnostics.md).
 
 ## 4. Use
 
@@ -148,8 +150,8 @@ Each key joins one row and one column; the wire list maps them to pins.
 
 ```sh
 pio run                                  # firmware → .pio/build/*/firmware.hex
-python tools/generate.py                 # after changing wiring in diagnostics/model.py
-python -m unittest discover -s tests     # tests
+uv run python tools/generate.py          # after changing wiring in diagnostics/model.py
+uv run python -m unittest discover -s tests
 ```
 
 Wiring lives in `diagnostics/model.py`; the firmware pin tables, wire list and diagram are generated from it.

@@ -24,31 +24,44 @@ class App:
         self.metadata={'mode':'hardware'}
         self.report_dir=Path('diagnostic-results')/datetime.now().strftime('%Y%m%d-%H%M%S')
         root.title('T14 diagnostics')
-        root.geometry('1160x760'); root.minsize(900,620)
+        root.geometry('1120x640'); root.minsize(820,520)
         root.configure(bg='#17191c')
         style=ttk.Style(root); style.theme_use('clam')
         style.configure('.',background='#17191c',foreground='#e9eaec',font=('Arial',11))
         style.configure('TButton',background='#30343b',padding=(12,7),borderwidth=0)
         style.map('TButton',background=[('active','#424852')],foreground=[('disabled','#777c85')])
         style.configure('TNotebook',borderwidth=0)
-        style.configure('TNotebook.Tab',background='#25282e',padding=(20,8))
+        style.configure('TNotebook.Tab',background='#25282e',padding=(16,5))
         style.map('TNotebook.Tab',background=[('selected','#424852')])
-        style.configure('Title.TLabel',font=('Arial',21,'bold'))
-        shell=ttk.Frame(root,padding=16); shell.pack(fill='both',expand=True)
-        bar=ttk.Frame(shell); bar.pack(fill='x',pady=(0,12))
-        ttk.Label(bar,text='T14',style='Title.TLabel').pack(side='left')
+        style.configure('Title.TLabel',font=('Arial',18,'bold'))
+        style.configure('Dim.TLabel',foreground='#9aa0a8')
+        # Dark tick boxes and radio dots; the theme's default white boxes stand out.
+        for widget in ('TCheckbutton','TRadiobutton'):
+            style.configure(widget,indicatorbackground='#30343b',indicatorforeground='#e9eaec',
+                            upperbordercolor='#30343b',lowerbordercolor='#30343b',focuscolor='#17191c')
+            style.map(widget,background=[('active','#17191c')],foreground=[('disabled','#777c85')],
+                      indicatorbackground=[('disabled','#25282e'),('pressed','#424852'),('selected','#4cc277')])
+        shell=ttk.Frame(root,padding=(10,8,10,10)); shell.pack(fill='both',expand=True)
+        bar=ttk.Frame(shell); bar.pack(fill='x',pady=(0,6))
+        # Connection light: gray until the diagnostics firmware answers, then green.
+        self.light=tk.Canvas(bar,width=12,height=12,bg='#17191c',highlightthickness=0)
+        self.light.pack(side='left',padx=(2,6))
+        self.dot=self.light.create_oval(1,1,11,11,fill='#6b7078',outline='')
+        self.connection_text=tk.StringVar(value='Not connected')
+        ttk.Label(bar,textvariable=self.connection_text).pack(side='left')
         self.count=tk.StringVar()
-        ttk.Label(bar,textvariable=self.count).pack(side='right')
+        ttk.Label(bar,textvariable=self.count,style='Dim.TLabel').pack(side='right')
         self.tabs=ttk.Notebook(shell); self.tabs.pack(fill='both',expand=True)
-        self.keys_tab=ttk.Frame(self.tabs,padding=(8,12))
+        self.keys_tab=ttk.Frame(self.tabs,padding=(8,6,8,4))
         self.tabs.add(self.keys_tab,text='Keyboard')
+        line=ttk.Frame(self.keys_tab); line.pack(fill='x')
         self.prompt=tk.StringVar()
-        ttk.Label(self.keys_tab,textvariable=self.prompt,style='Title.TLabel').pack(anchor='w')
+        ttk.Label(line,textvariable=self.prompt,style='Title.TLabel').pack(side='left')
         self.status=tk.StringVar()
-        ttk.Label(self.keys_tab,textvariable=self.status).pack(anchor='w',pady=(5,0))
+        ttk.Label(line,textvariable=self.status,style='Dim.TLabel').pack(side='left',padx=12)
         # The drawing scales to whatever space is left, so nothing is ever cut off.
         self.keyboard=Keyboard(self.keys_tab,self.select,self.show_mouse)
-        self.keyboard.pack(fill='both',expand=True,pady=(8,0))
+        self.keyboard.pack(fill='both',expand=True,pady=(4,0))
         self.mouse=MousePanel(self.tabs,self.start_trackpoint,self.mouse_changed)
         self.metadata['mouse']=self.mouse.state.report()
         self.tabs.add(self.mouse,text='TrackPoint')
@@ -60,9 +73,14 @@ class App:
 
     def show_mouse(self): self.tabs.select(self.mouse)
 
+    def set_connected(self,on):
+        self.light.itemconfig(self.dot,fill='#4cc277' if on else '#6b7078')
+        self.connection_text.set('Connected' if on else 'Not connected')
+
     def waiting(self,problem=None):
-        self.prompt.set('Plug in your Teensy' if not problem else 'Can’t talk to the Teensy')
-        self.status.set(problem or 'It needs t14_diagnostics.hex flashed. Testing starts by itself.')
+        self.set_connected(False)
+        self.prompt.set('Plug in the Teensy' if not problem else 'Can’t talk to the Teensy')
+        self.status.set(problem or '')
 
     def send(self,command):
         if self.connection: self.connection.send(command)
@@ -98,7 +116,7 @@ class App:
         self.events=queue.Queue()
         self.connection=Connection(port,self.events)
         self.connection.start()
-        self.prompt.set('Connecting…'); self.status.set(port)
+        self.prompt.set('Connecting…')
 
     def start(self):
         self.started_at=time.monotonic()
@@ -107,7 +125,7 @@ class App:
 
     def selected_prompt(self,key):
         self.prompt.set('Press '+key)
-        self.status.set('Press and release it')
+        self.status.set('')
 
     def select(self,key):
         if not self.scanning: return
@@ -131,10 +149,11 @@ class App:
         kind=event.get('type')
         if kind=='hello':
             self.identified=True; self.metadata['firmware']=event
+            self.set_connected(True); self.status.set('')
             self.lights.enable(True); self.start()
         elif kind=='started':
             self.scanning=True; self.last_state=time.monotonic()
-            self.guide.begin(); self.prompt.set('Release all keys'); self.status.set('')
+            self.guide.begin()
         elif kind=='state' and self.scanning:
             try: pairs=parse_pairs(event.get('pairs'))
             except ValueError: self.reset_scan(); return

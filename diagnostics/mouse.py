@@ -45,17 +45,16 @@ class MouseState:
 
 class MousePanel(ttk.Frame):
     def __init__(self,parent,on_start,on_change):
-        super().__init__(parent,padding=16)
+        super().__init__(parent,padding=(10,8))
         self.state=MouseState(); self.on_start,self.on_change=on_start,on_change
-        ttk.Label(self,text='TrackPoint and buttons',style='Title.TLabel').pack(anchor='w')
-        ttk.Label(self,text='Push the red stick up, down, left and right, then click each T14 button.').pack(anchor='w',pady=(5,12))
+        ttk.Label(self,text='Push the stick up, down, left and right, then click each T14 button.').pack(anchor='w',pady=(0,6))
         row=ttk.Frame(self); row.pack(fill='x')
         self.caption=tk.StringVar(value='Waiting for the Teensy')
         ttk.Label(row,textvariable=self.caption).pack(side='left')
         # Only shown when the TrackPoint did not answer; everything else starts by itself.
         self.retry=ttk.Button(row,text='Try again',command=self.on_start)
         self.area=tk.Canvas(self,bg='#202327',height=260,highlightthickness=1,highlightbackground='#454951')
-        self.area.pack(fill='both',expand=True,pady=10)
+        self.area.pack(fill='both',expand=True,pady=6)
         self.progress=tk.StringVar()
         ttk.Label(self,textvariable=self.progress).pack(anchor='w')
         self.dot=None; self.trail=[]
@@ -102,23 +101,20 @@ class MousePanel(ttk.Frame):
 
 class LightsPanel(ttk.Frame):
     def __init__(self,parent,send):
-        super().__init__(parent,padding=16)
+        super().__init__(parent,padding=(10,8))
         self.send=send
-        ttk.Label(self,text='Lights',style='Title.TLabel').pack(anchor='w')
-        ttk.Label(self,text='Tick an LED and check that the matching light on the keyboard turns on.').pack(anchor='w',pady=(5,12))
+        ttk.Label(self,text='Tick a light and check that it turns on.').pack(anchor='w',pady=(0,6))
         self.leds={name:tk.BooleanVar() for name in LEDS}
         self.controls=[]
         for name,var in self.leds.items():
             box=ttk.Checkbutton(self,text=name+' LED',variable=var,command=self.apply_leds)
-            box.pack(anchor='w',pady=3); self.controls.append(box)
-        ttk.Label(self,text='Backlight').pack(anchor='w',pady=(16,4))
+            box.pack(anchor='w',pady=2); self.controls.append(box)
+        ttk.Label(self,text='Backlight').pack(anchor='w',pady=(10,2))
         self.level=tk.IntVar(value=0)
         row=ttk.Frame(self); row.pack(anchor='w')
         for value,name in enumerate(['Off','Low','High']):
             button=ttk.Radiobutton(row,text=name,value=value,variable=self.level,command=self.apply_backlight)
             button.pack(side='left',padx=(0,12)); self.controls.append(button)
-        ttk.Label(self,text='No LED lights: check FPC 16 to 3.3 V. One LED dark: check its resistor and wire.\n'
-                            'No backlight: check VIN, GND and the gate wire on pin 33.').pack(anchor='w',pady=(20,0))
         self.enable(False)
 
     def enable(self,on):

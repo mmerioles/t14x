@@ -79,7 +79,7 @@ class MappingTests(unittest.TestCase):
     def test_generated_files_are_current(self):
         from tools.generate import outputs
         for path,content in outputs().items():
-            self.assertEqual(path.read_text(encoding='utf-8'),content,f'{path.name}: run python tools/generate.py')
+            self.assertEqual(path.read_text(encoding='utf-8'),content,f'{path.name}: run uv run python tools/generate.py')
 
     def test_mouse_buttons_are_scanned(self):
         from diagnostics.model import BUTTONS

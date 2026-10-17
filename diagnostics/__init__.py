@@ -1,1 +1,1 @@
-"""T14 keyboard diagnostics (Python 3.10+)."""
+"""T14 keyboard diagnostics. Run with: uv run diagnostics"""

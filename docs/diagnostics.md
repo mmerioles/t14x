@@ -4,11 +4,11 @@ Tests all 84 keys, the TrackPoint, the mouse buttons, the LEDs and the backlight
 
 ## Test
 
-Run `py run_diagnostics.py` (Windows) or `python3 run_diagnostics.py` (macOS/Linux) in the project folder, then plug in the Teensy. Testing starts by itself. If the Teensy isn’t found, add `--port COM5` (or `/dev/ttyACM0`). On Linux, a permission error means running `sudo usermod -aG dialout $USER` and logging back in.
+Run `uv run diagnostics` in the project folder. The light at the top turns green and says **Connected** when the Teensy is plugged in; press Esc to begin. If the Teensy isn’t found, add `--port COM5` (or `/dev/ttyACM0`). On Linux, a permission error means running `sudo usermod -aG dialout $USER` and logging back in.
 
 | Tab | What to do | Pass |
 | :--- | :--- | :--- |
-| **Keyboard** | Press and release the key shown at the top. The next one appears by itself | Green outline. Orange means check that key; the app names its two wires. Click a key to test it again |
+| **Keyboard** | Press and release the key shown at the top, starting with Esc | Green outline. Orange means check that key; the app names its two wires. Click a key to test it again |
 | **TrackPoint** | Push the stick up, down, left and right, then click each T14 button | Directions 4/4, Buttons 3/3 |
 | **Lights** | Tick each LED and pick each backlight level | You see the matching light |
 

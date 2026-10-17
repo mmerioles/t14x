@@ -199,4 +199,4 @@ if __name__=='__main__':
         if current==content: continue
         if '--check' in sys.argv: stale.append(str(path.relative_to(ROOT)))
         else: path.write_text(content,encoding='utf-8')
-    if stale: raise SystemExit('Out of date, run python tools/generate.py: '+', '.join(stale))
+    if stale: raise SystemExit('Out of date, run uv run python tools/generate.py: '+', '.join(stale))

@@ -25,8 +25,11 @@ class GuiTests(unittest.TestCase):
 
     def test_starts_by_itself(self):
         from diagnostics.model import WIRING_ID
-        self.assertEqual(self.app.prompt.get(),'Plug in your Teensy')
+        self.assertEqual(self.app.prompt.get(),'Plug in the Teensy')
+        self.assertEqual(self.app.connection_text.get(),'Not connected')
         self.connect()
+        self.assertEqual(self.app.connection_text.get(),'Connected')
+        self.assertEqual(self.app.light.itemcget(self.app.dot,'fill'),'#4cc277')
         sent=[c.args[0] for c in self.app.send.call_args_list]
         self.assertEqual(sent[:2],['START '+WIRING_ID,'TRACKPOINT'])
         self.assertEqual(self.app.prompt.get(),'Press Esc')
@@ -58,7 +61,7 @@ class GuiTests(unittest.TestCase):
         self.assertEqual(positions['Home'][1],positions['F12'][1])
         self.assertGreater(positions['Left'][1],positions['Up'][1])
         board=self.app.keyboard
-        for size in ('1160x760','900x620','1920x1080','1000x1000'):
+        for size in ('1120x640','820x520','1920x1080','1000x1000'):
             self.root.geometry(size); self.root.update()
             bottom=self.root.winfo_rooty()+self.root.winfo_height()
             self.assertLessEqual(board.winfo_rooty()+board.winfo_height(),bottom,size)
@@ -97,6 +100,11 @@ class GuiTests(unittest.TestCase):
         app.lights.level.set(2); app.lights.apply_backlight()
         sent=[c.args[0] for c in app.send.call_args_list]
         self.assertIn('LED 1',sent); self.assertIn('BACKLIGHT 2',sent)
+
+    def test_unplugging_turns_the_light_gray(self):
+        self.connect(); self.app.handle({'type':'disconnected'})
+        self.assertEqual(self.app.connection_text.get(),'Not connected')
+        self.assertEqual(self.app.light.itemcget(self.app.dot,'fill'),'#6b7078')
 
     def test_restarts_after_a_fault(self):
         app=self.app; self.connect()
