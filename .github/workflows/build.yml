@@ -1,11 +1,8 @@
-name: Pico Compile Check
+name: Teensy build and tests
 
 on:
   push:
   pull_request:
-
-env:
-  PICO_SDK_PATH: /opt/pico-sdk
 
 jobs:
   build:
@@ -14,38 +11,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3-tk
+      - name: Install Tk for the diagnostics tests
+        run: sudo apt-get update && sudo apt-get install -y python3-tk
 
-      - name: Test diagnostic mapping
+      - name: Python tests and generated-file drift
         run: python3 -m unittest discover -s tests -v
 
-      - name: Test keyboard core
+      - name: Native firmware logic tests
         run: |
           mkdir -p build
           cc -std=c11 -Wall -Wextra -Werror -Ifirmware tests/keyboard_core_test.c firmware/keyboard_core.c firmware/keymap.c -o build/keyboard_core_tests
           ./build/keyboard_core_tests
-          python3 tools/generate_keymap.py --check
+          cc -std=c11 -Wall -Wextra -Werror -Ifirmware tests/mouse_core_test.c firmware/mouse_core.c -o build/mouse_core_tests
+          ./build/mouse_core_tests
+          python3 tools/generate.py --check
 
-      - name: Install Pico SDK
-        run: |
-          sudo git clone --depth 1 --branch 2.2.0 https://github.com/raspberrypi/pico-sdk.git $PICO_SDK_PATH
-          sudo chown -R $USER:$USER $PICO_SDK_PATH
-          cd $PICO_SDK_PATH
-          git submodule update --init
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: platformio-${{ hashFiles('platformio.ini') }}
 
-      - name: Build
+      - name: Build Teensy 4.1 firmware
         run: |
-          mkdir -p build
-          cd build
-          cmake ..
-          make -j$(nproc)
+          pipx install platformio
+          pio run
+          cp .pio/build/keyboard/firmware.hex build/t14_keyboard.hex
+          cp .pio/build/diagnostics/firmware.hex build/t14_diagnostics.hex
 
       - uses: actions/upload-artifact@v4
         with:
-          name: t14-firmware
+          name: t14-teensy41-firmware
           path: |
-            build/t14_keyboard.uf2
-            build/t14_diagnostics.uf2
+            build/t14_keyboard.hex
+            build/t14_diagnostics.hex
