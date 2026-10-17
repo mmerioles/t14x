@@ -1,16 +1,10 @@
 # Diagnostics
 
-Checks every wire from the computer: all 84 keys, the TrackPoint, the three mouse buttons, the four indicator LEDs and the backlight. Flash **`t14_diagnostics.hex`** first (same steps as the [keyboard firmware](../README.md#1--flash-the-firmware)). The keyboard firmware has no serial port.
-
-## Run the app
-
-From the project folder, run `py run_diagnostics.py` on Windows or `python3 run_diagnostics.py` on macOS/Linux. The first run creates `.venv` and installs [requirements.txt](../requirements.txt); later runs start at once. If Python or Tk is missing, it tells you how to install it. The [README](../README.md#3--test-the-wiring) has step-by-step instructions.
-
-The app finds the Teensy by itself. If it doesn’t, add `--port COM5` (or `/dev/ttyACM0`).
+Tests all 84 keys, the TrackPoint, the mouse buttons, the LEDs and the backlight. Needs `t14_diagnostics.hex` on the Teensy ([how to flash](../README.md#2-flash)).
 
 ## Test
 
-Plug in the Teensy. The app connects, checks the firmware and wiring versions, and starts testing by itself. There’s nothing to click.
+Run `py run_diagnostics.py` (Windows) or `python3 run_diagnostics.py` (macOS/Linux) in the project folder, then plug in the Teensy. Testing starts by itself. If the Teensy isn’t found, add `--port COM5` (or `/dev/ttyACM0`). On Linux, a permission error means running `sudo usermod -aG dialout $USER` and logging back in.
 
 | Tab | What to do | Pass |
 | :--- | :--- | :--- |
@@ -18,7 +12,7 @@ Plug in the Teensy. The app connects, checks the firmware and wiring versions, a
 | **TrackPoint** | Push the stick up, down, left and right, then click each T14 button | Directions 4/4, Buttons 3/3 |
 | **Lights** | Tick each LED and pick each backlight level | You see the matching light |
 
-The next key has a white outline and a pressed key turns blue. Results save automatically to `diagnostic-results/` as `report.json`, `keys.csv` and a readable `README.md`. If the Teensy is unplugged or a wire faults, testing picks up again by itself once it’s fixed.
+Results save to `diagnostic-results/`.
 
 ## When something fails
 
@@ -26,7 +20,7 @@ The next key has a white outline and a pressed key turns blue. Results save auto
 | :--- | :--- |
 | Key gives no activity | One of its two FPC wires: seating, orientation or continuity |
 | Key always shows the same wrong pair | Two wires crossed |
-| “FPC n is stuck low” on Start | That wire touches ground, or sits on the wrong FPC contact |
+| “FPC n is stuck low” | That wire touches ground, or sits on the wrong FPC contact |
 | TrackPoint “not responding” | CLK and DATA swapped, RST missing, or no 3.3 V or GND at the TrackPoint. Fix it, then click **Try again** |
 | TrackPoint ready but a direction never passes | Push harder or longer; the threshold is 20 counts |
 | Button never passes | D4 (FPC 9) or that button’s wire |
@@ -34,7 +28,7 @@ The next key has a white outline and a pressed key turns blue. Results save auto
 | One LED dark | Its resistor or wire, or it’s in backwards on the breakout |
 | No backlight | T6 on VIN, T8 on GND, T7 on pin 33, or the ribbon order |
 
-The scanner tests one key at a time. Several keys held together can make indirect paths in this matrix, so those tests read *ambiguous*; release and retry. A quiet scan can’t tell good wiring from an unplugged ribbon, so press keys to prove it.
+Press one key at a time; several at once read as *ambiguous*.
 
 ## How the firmware scans
 

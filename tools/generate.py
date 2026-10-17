@@ -128,54 +128,50 @@ def readme_tables():
 
 
 def wiring_svg():
-    pitch,top,width=26,170,1100
-    left,right=480,620
-    cx=(left+right)//2
-    height=top+24*pitch+70
+    """Top view of a Teensy 4.1 at roughly true proportions, with each wire's far end labeled."""
+    pitch,top,width=22,60,860
+    cx=width//2
+    left,right=cx-66,cx+66            # pin rows are 0.6 in apart
+    bottom=top+23*pitch
+    height=bottom+70
+    short={fpc:name.lower()+' button' for name,(fpc,_) in BUTTONS.items()}
+    short.update({fpc:name+' LED' for name,fpc in LEDS.items()})
+    short.update({9:'button common',16:'LED +'})
     attached={}
-    short={fpc:name for name,(fpc,_) in BUTTONS.items()} | {fpc:name for name,fpc in LEDS.items()}
     for wire,(fpc,pin) in FPC_WIRES.items():
-        role=short.get(fpc) and short[fpc]+(' LED' if fpc in LEDS.values() else ' button')
-        role=role or {9:'Button common',16:'LED +'}.get(fpc)
-        attached[pin]=(wire,f'FPC {fpc}'+(f' · {role}' if role else ''),color(wire),fpc in LEDS.values())
+        attached[pin]=(wire,f'FPC {fpc}'+(f' {short[fpc]}' if fpc in short else ''),color(wire),fpc in LEDS.values())
     for wire,(signal,name,pin) in RIBBON_WIRES.items(): attached[pin]=(wire,signal,name,False)
     out=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
-         'font-family="Arial, Helvetica, sans-serif" role="img" aria-label="Teensy 4.1 wiring for the T14 keyboard">',
-         '<title>Teensy 4.1 wiring for the T14 keyboard</title>',
-         f'<rect width="{width}" height="{height}" rx="14" fill="#ffffff"/>',
-         f'<text x="{cx}" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">Teensy 4.1 wiring · top view, USB at the top</text>',
-         f'<text x="{cx}" y="66" text-anchor="middle" font-size="14" fill="#444">Each line: wire ID · where its other end goes. Zig-zags are the {LED_RESISTOR} LED resistors.</text>',
-         f'<text x="{cx}" y="86" text-anchor="middle" font-size="14" fill="#444">Pins 13, 32, 34, 35 and the GND next to VIN stay empty.</text>',
-         f'<rect x="{left-25}" y="{top-55}" width="{right-left+50}" height="{24*pitch+75}" rx="10" fill="#1b5e20" stroke="#0d3311" stroke-width="2"/>',
-         f'<rect x="{cx-35}" y="{top-70}" width="70" height="40" rx="6" fill="#b0b0b0" stroke="#666"/>',
-         f'<text x="{cx}" y="{top-44}" text-anchor="middle" font-size="12" fill="#222">USB</text>',
-         f'<text x="{cx}" y="{top+12*pitch}" transform="rotate(-90 {cx} {top+12*pitch})" text-anchor="middle" '
-         'dominant-baseline="middle" font-size="20" font-weight="bold" fill="#e8f5e9">Teensy 4.1</text>']
+         'font-family="Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Teensy 4.1 wiring for the T14 keyboard">',
+         f'<rect width="{width}" height="{height}" fill="#fbfbf8"/>',
+         # board, micro-USB socket, i.MX RT chip, SD card socket
+         f'<rect x="{left-22}" y="{top-26}" width="{right-left+44}" height="{bottom-top+62}" rx="5" fill="#16613a" stroke="#0e3f26"/>',
+         f'<rect x="{cx-18}" y="{top-36}" width="36" height="24" rx="2" fill="#c9cccf" stroke="#8a8f94"/>',
+         f'<rect x="{cx-28}" y="{top+5*pitch}" width="56" height="56" rx="2" fill="#2b2d30"/>',
+         f'<rect x="{cx-32}" y="{bottom-32}" width="64" height="44" rx="2" fill="#b5b8bb" stroke="#8a8f94"/>']
     for side,pads in (('L',TEENSY_LEFT),('R',TEENSY_RIGHT)):
+        x=left if side=='L' else right
         for i,pin in enumerate(pads):
             y=top+i*pitch
-            x=left if side=='L' else right
-            label=pin if isinstance(pin,int) else {'GND_L':'GND','GND_R':'GND','3V3_L':'3.3V','3V3_R':'3.3V'}.get(pin,pin)
-            power=not isinstance(pin,int)
-            out.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#7a5c00"/>')
-            tx=x+14 if side=='L' else x-14
-            out.append(f'<text x="{tx}" y="{y+5}" text-anchor="{"start" if side=="L" else "end"}" font-size="13" '
-                       f'font-weight="{"bold" if power else "normal"}" fill="#ffffff">{label}</text>')
-            if pin not in attached: continue
-            wire,text,name,resistor=attached[pin]
-            end=x-150 if side=='L' else x+150
-            stroke=HEX[name]
-            out.append(f'<line x1="{x}" y1="{y}" x2="{end}" y2="{y}" stroke="#333" stroke-width="8" stroke-linecap="round"/>')
-            out.append(f'<line x1="{x}" y1="{y}" x2="{end}" y2="{y}" stroke="{stroke}" stroke-width="5" stroke-linecap="round"/>')
-            if resistor:
-                mid=(x+end)/2
-                zig=' '.join(f'{mid-18+k*6},{y+(-6 if k%2 else 6) if 0<k<6 else y}' for k in range(7))
-                out.append(f'<rect x="{mid-21}" y="{y-9}" width="42" height="18" fill="#ffffff"/>')
-                out.append(f'<polyline points="{zig}" fill="none" stroke="#111" stroke-width="2"/>')
-            anchor='end' if side=='L' else 'start'
-            lx=end-12 if side=='L' else end+12
-            out.append(f'<text x="{lx}" y="{y+5}" text-anchor="{anchor}" font-size="14" fill="#111">'
-                       f'<tspan font-weight="bold">{wire}</tspan> · {text}</text>')
+            label=pin if isinstance(pin,int) else {'GND_L':'G','GND_R':'G','GND':'G','3V3_L':'3V','3V3_R':'3V','VIN':'VIN'}[pin]
+            tx,anchor=(x+11,'start') if side=='L' else (x-11,'end')
+            out.append(f'<text x="{tx}" y="{y+4}" text-anchor="{anchor}" font-size="10" fill="#e9f3ec">{label}</text>')
+            if pin in attached:
+                wire,text,name,resistor=attached[pin]
+                end=x-150 if side=='L' else x+150
+                edge=' stroke="#555" stroke-width="0.6"' if name in ('white','yellow') else ''
+                out.append(f'<rect x="{min(x,end)}" y="{y-2}" width="150" height="4" rx="2" fill="{HEX[name]}"{edge}/>')
+                if resistor:
+                    mid=(x+end)/2
+                    out.append(f'<rect x="{mid-13}" y="{y-5}" width="26" height="10" rx="4" fill="#d8c29d" stroke="#9b8462" stroke-width="0.6"/>')
+                    for k,band in enumerate(['#e07b00','#e07b00','#7a4a1e','#c9a227']):  # 330 ohm
+                        out.append(f'<rect x="{mid-8+k*5+(2 if k==3 else 0)}" y="{y-5}" width="2" height="10" fill="{band}"/>')
+                lx,anchor=(end-8,'end') if side=='L' else (end+8,'start')
+                out.append(f'<text x="{lx}" y="{y+4}" text-anchor="{anchor}" fill="#2a2a2a">'
+                           f'<tspan font-weight="bold">{wire}</tspan>  {text}</text>')
+            out.append(f'<circle cx="{x}" cy="{y}" r="6" fill="#c8a24a"/><circle cx="{x}" cy="{y}" r="2.6" fill="#1b1b1b"/>')
+    out.append(f'<text x="{cx}" y="{height-22}" text-anchor="middle" font-size="11" fill="#777">'
+               f'Top view, USB up. G = ground, 3V = 3.3 V. Bands = {LED_RESISTOR} resistor.</text>')
     out.append('</svg>')
     return '\n'.join(out)+'\n'
 

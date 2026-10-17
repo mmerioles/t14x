@@ -1,46 +1,27 @@
-# T14 Gen 1 USB keyboard · Teensy 4.1
+# T14 Gen 1 keyboard → USB
 
-Turns a ThinkPad T14 Gen 1 keyboard into a plug-in USB keyboard with a working TrackPoint, mouse buttons, indicator LEDs and backlight, using a **Teensy 4.1**.
+A ThinkPad T14 Gen 1 keyboard as a USB keyboard and mouse, driven by a Teensy 4.1. Keys, Fn layer, TrackPoint, mouse buttons, indicator LEDs and backlight.
 
-| Part | Status |
-| :--- | :--- |
-| 84 keys | ✅ Matrix verified 84/84 on hardware ([report](docs/verified-report.json)); same FPC contacts carry over |
-| Fn layer, media keys, Fn Lock | ✅ Unit-tested in firmware logic |
-| TrackPoint, 3 mouse buttons | 🧪 New: firmware built and unit-tested, awaiting a hardware test |
-| 4 indicator LEDs, backlight | 🧪 New: firmware built, awaiting a hardware test |
+All 84 keys are [verified on hardware](docs/verified-keymap.md). The TrackPoint, buttons, LEDs and backlight are not yet tested on hardware.
 
-After wiring, [run the diagnostics](#3--test-the-wiring) to check every wire before everyday use.
+## Parts
 
-## You need
+- Teensy 4.1 and a micro-USB data cable
+- 40-pin 0.5 mm FPC breakout and 12-pin 1.0 mm FPC breakout
+- 4 × 330 Ω resistors
+- Hookup wire, multimeter
 
-- **Teensy 4.1** and a micro-USB **data** cable
-- **40-pin 0.5 mm FPC breakout** (keys, mouse buttons, LEDs) and **12-pin 1.0 mm FPC breakout** (TrackPoint, backlight)
-- **4 × 330 Ω resistors** (anything from 220 Ω to 1 kΩ works) for the indicator LEDs
-- Hookup wire in the colors below, and a multimeter
-- The free **[Teensy Loader](https://www.pjrc.com/teensy/loader.html)** app
+## 1. Wire
 
-## 1 · Flash the firmware
+Unplug USB while wiring. The Teensy is 3.3 V only; T6 is the only wire on 5 V (VIN).
 
-1. Install and open **Teensy Loader**. On Linux, also install PJRC’s [udev rules](https://www.pjrc.com/teensy/00-teensy.rules).
-2. Download **[t14_keyboard.hex](https://github.com/mmerioles/t14x-/raw/refs/heads/main/downloads/t14_keyboard.hex)**.
-3. Connect the Teensy over USB. In Teensy Loader choose **File ▸ Open HEX File** and pick the file.
-4. Press the **white button** on the Teensy. The loader shows *Reboot OK*, and the Teensy restarts as **T14 USB Keyboard**.
+![Teensy 4.1 wiring](docs/wiring.svg)
 
-It stays installed. [Checksums](downloads/SHA256SUMS.txt).
+- D5–D8 each get a 330 Ω resistor in line.
+- Leave FPC 1–5 and the 12-pin ribbon’s M, R, L contacts unconnected.
 
-## 2 · Wire it
-
-**Unplug USB before changing wires.** Exposed ribbon copper faces the connector contacts. The Teensy is **3.3 V only**: the one 5 V wire is **T6** (backlight V+, on VIN).
-
-![Teensy 4.1 wiring diagram](docs/wiring.svg)
-
-| Bundle | What | Notes |
-| :--- | :--- | :--- |
-| **A, B, C** | Key matrix, FPC 11, 12, 17–40 | Same FPC ends as the old Pico build; only the Teensy end moves |
-| **D** | Mouse buttons, indicator LEDs, FPC 6–10, 13–16 | Put a **330 Ω resistor in line on D5–D8** |
-| **T** | 12-pin ribbon: TrackPoint and backlight | Wired by signal; **check the pin order first** (below) |
-
-Bundles A–D use colors in this order: brown, red, orange, yellow, green, blue, purple, gray, white, black. There, black is a signal wire. Bundle T has its own colors: red is 3.3 V and black is ground. Leave FPC 1–5 and the TrackPoint’s own M/R/L ribbon contacts unconnected; the buttons are read through D1–D4.
+<details>
+<summary>Wire list</summary>
 
 <!-- wiring-tables:start -->
 | Wire | Color | FPC | Teensy | Function |
@@ -93,66 +74,55 @@ Bundles A–D use colors in this order: brown, red, orange, yellow, green, blue,
 | T8 | ![Gray](docs/wire-colors/gray.svg) | Backlight V− | GND (right, below pin 13) |  |
 <!-- wiring-tables:end -->
 
-### Check the 12-pin ribbon before powering it
+</details>
 
-The T14 reference gives the TrackPoint signal order (**Vcc, DATA, RST, M, R, L, GND, CLK**) but not the exact contact numbers, nor which contacts carry the backlight. Confirm with a multimeter on continuity, keyboard unplugged:
+**Check the 12-pin ribbon first.** Its contact numbers aren’t published. The reference order is Vcc, DATA, RST, M, R, L, GND, CLK, plus three backlight contacts. With the keyboard unplugged, confirm with a multimeter:
 
-| Find | How |
+| Signal | Beeps to |
 | :--- | :--- |
-| GND | Beeps to a ground point on the TrackPoint board, such as the middle pin of its crystal |
-| Vcc | The other extra-wide trace; never beeps to GND |
-| DATA, RST, CLK | Follow the order above from Vcc; your measured GND must land in its slot |
-| Backlight gate, V− | Beep to the **G** and **S** pads of the MOSFET on the backlight film |
-| Backlight V+ | The third backlight contact; it doesn’t beep to the MOSFET |
+| GND | Ground on the TrackPoint board, such as the crystal’s middle pin |
+| Backlight gate / V− | The G / S pad of the MOSFET on the backlight film |
+| Backlight V+ | Nothing above; it’s the remaining backlight contact |
 
-If anything disagrees, wire by your measurements. The diagnostics TrackPoint test confirms CLK and DATA, since swapped lines simply get no response.
+## 2. Flash
 
-## 3 · Test the wiring
+Use [Teensy Loader](https://www.pjrc.com/teensy/loader.html) (on Linux, add the [udev rules](https://www.pjrc.com/teensy/00-teensy.rules)): **File ▸ Open HEX File**, then press the button on the Teensy.
 
-The diagnostics app checks every key, the TrackPoint, the mouse buttons, the LEDs and the backlight.
+| File | Use |
+| :--- | :--- |
+| [t14_diagnostics.hex](https://github.com/mmerioles/t14x-/raw/refs/heads/main/downloads/t14_diagnostics.hex) | Wiring test (step 3) |
+| [t14_keyboard.hex](https://github.com/mmerioles/t14x-/raw/refs/heads/main/downloads/t14_keyboard.hex) | The keyboard (step 4) |
 
-1. **Install Python** (3.9 or newer):
-   - **Windows:** from [python.org](https://www.python.org/downloads/). Tick **Add python.exe to PATH** in the installer.
-   - **macOS:** from [python.org](https://www.python.org/downloads/). Apple’s built-in Python freezes with this app.
-   - **Linux:** `sudo apt install python3 python3-tk python3-venv`
-2. **Flash [t14_diagnostics.hex](https://github.com/mmerioles/t14x-/raw/refs/heads/main/downloads/t14_diagnostics.hex)** the same way as in step 1.
-3. **Get this project:** on GitHub, click **Code ▸ Download ZIP** and unzip it.
-4. **Open a terminal in that folder:**
-   - **Windows:** open the folder, type `cmd` in the address bar and press Enter.
-   - **macOS:** right-click the folder and choose **New Terminal at Folder**.
-   - **Linux:** right-click inside the folder and choose **Open in Terminal**.
-5. **Start the app:**
+## 3. Test
 
-   | Windows | macOS / Linux |
-   | :--- | :--- |
-   | `py run_diagnostics.py` | `python3 run_diagnostics.py` |
+Flash `t14_diagnostics.hex`. Install [Python](https://www.python.org/downloads/) 3.9+ (on Linux: `sudo apt install python3-tk python3-venv`), [download this project](https://github.com/mmerioles/t14x-/archive/refs/heads/main.zip), and run this in its folder:
 
-   The first start sets everything up, which takes about a minute. After that it opens at once.
-6. **Plug in the Teensy.** The app finds it and starts by itself. Press each key it asks for, then use the **TrackPoint** and **Lights** tabs. [What each test means](docs/diagnostics.md).
-7. When everything passes, flash **t14_keyboard.hex** again to use the keyboard.
+| Windows | macOS / Linux |
+| :--- | :--- |
+| `py run_diagnostics.py` | `python3 run_diagnostics.py` |
 
-**Teensy not found?** Add `--port COM5` (or `/dev/ttyACM0`). **Linux says permission denied?** Run `sudo usermod -aG dialout $USER`, then log out and back in.
+Plug in the Teensy. The app starts by itself: press each key it shows, then check the TrackPoint and Lights tabs. Details and troubleshooting are in [docs/diagnostics.md](docs/diagnostics.md).
 
-## 4 · Use it
+## 4. Use
+
+Flash `t14_keyboard.hex`.
 
 | Keys | Action |
 | :--- | :--- |
-| Fn + Esc | **Fn Lock**. LED on: F1–F12 are standard keys (default). LED off: they do the printed function without Fn |
+| Fn + Esc | Fn Lock (LED on: F1–F12 are plain F-keys) |
 | Fn + F1 / F2 / F3 | Mute / volume down / volume up |
-| Fn + F4 | Mic mute (sent as F20, which Linux maps to mic mute; remap it on Windows/macOS) |
-| Fn + F5 / F6 | Screen brightness down / up, when the host supports it |
-| Fn + F7 / F9 | Display switch (Super + P) / Settings (Super + I) |
-| Fn + Space | Backlight off → low → high |
-| Fn + P / Fn + K | Pause / Scroll Lock |
-| TrackPoint | Move the pointer. **Hold middle and push to scroll**; tap middle to middle-click |
+| Fn + F4 | Mic mute (as F20; works on Linux) |
+| Fn + F5 / F6 | Brightness down / up |
+| Fn + F7 / F9 | Super + P / Super + I |
+| Fn + Space | Backlight off, low, high |
+| Fn + P / K | Pause / Scroll Lock |
+| Middle button + TrackPoint | Scroll |
 
-- **LEDs:** Caps Lock follows the computer. Speaker and mic mute show the last key press, and a volume key clears speaker mute. The computer can’t report its real mute state, so these LEDs can drift out of sync. The Teensy’s orange LED also shows Caps Lock.
-- **Remembered across unplugging:** Fn Lock and backlight level. The lights switch off while the computer sleeps.
-- **Limits:** six keys plus modifiers per report; ghost-prone key combinations are suppressed. F8, F10–F12 have no portable USB function and stay F-keys. The keyboard can’t wake a sleeping computer.
+Fn Lock and backlight level are remembered. The mute LEDs follow the keys, not the computer. The keyboard can’t wake a sleeping computer.
 
-### Key matrix
+## Key matrix
 
-Each key joins one row and one column. For example, **A = R0 + C1 = FPC 34 + 36 = Teensy pins 14 + 40**. Empty cells have no key. [Every key with its pins and USB code](docs/verified-keymap.md).
+Each key joins one row and one column; the wire list maps them to pins.
 
 | Row / FPC | C0 / 29 | C1 / 36 | C2 / 32 | C3 / 35 | C4 / 40 | C5 / 33 | C6 / 39 | C7 / 38 | C8 / 11 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -174,34 +144,17 @@ Each key joins one row and one column. For example, **A = R0 + C1 = FPC 34 + 36 
 | R15 / 22 | LAlt | · | · | PrtSc | · | · | RAlt | · | · |
 | R16 / 12 | · | · | · | · | · | · | · | · | Fn |
 
-`L`/`R` mean left/right modifiers. `Super` is Windows on Windows and Command on macOS. The computer’s keyboard layout decides which characters you get.
-
-## Build from source
-
-Needs Python 3.10+ and [PlatformIO](https://platformio.org/install/cli). Run from the repository root:
+## Build
 
 ```sh
-pio run                                   # both firmware builds
-python tools/generate.py                  # after editing the wiring in diagnostics/model.py
-python -m unittest discover -s tests -v   # Python tests, including generated-file drift
+pio run                                  # firmware → .pio/build/*/firmware.hex
+python tools/generate.py                 # after changing wiring in diagnostics/model.py
+python -m unittest discover -s tests     # tests
 ```
 
-| Output | Use |
-| :--- | :--- |
-| `.pio/build/keyboard/firmware.hex` | Everyday keyboard and TrackPoint (`downloads/t14_keyboard.hex`) |
-| `.pio/build/diagnostics/firmware.hex` | Serial wiring tester for the [diagnostics app](docs/diagnostics.md) |
-
-The C logic also has native tests, which CI runs along with both builds:
-
-```sh
-cc -std=c11 -Ifirmware tests/keyboard_core_test.c firmware/keyboard_core.c firmware/keymap.c -o build/kb && build/kb
-cc -std=c11 -Ifirmware tests/mouse_core_test.c firmware/mouse_core.c -o build/ms && build/ms
-```
-
-`diagnostics/model.py` is the one source of truth for wiring. `tools/generate.py` writes the firmware pin tables, the wiring tables above, the diagram and the key list from it. The key map is generated only if all 84 saved hardware results match. The firmware uses PJRC’s Teensyduino USB IDs, so it suits personal use but not a product.
+Wiring lives in `diagnostics/model.py`; the firmware pin tables, wire list and diagram are generated from it.
 
 ## Reference
 
-- [T14 keyboard reverse engineering](https://github.com/delingren/thinkpad_keyboards/blob/main/t14-v1.md) and [TrackPoint and backlight notes](https://github.com/delingren/thinkpad_keyboards#trackpoint) (delingren)
+- [T14 keyboard notes](https://github.com/delingren/thinkpad_keyboards/blob/main/t14-v1.md) and [TrackPoint/backlight notes](https://github.com/delingren/thinkpad_keyboards#trackpoint) by delingren
 - [Teensy 4.1 pinout](https://www.pjrc.com/teensy/pinout.html)
-- Firmware: [keyboard](firmware/keyboard_main.cpp), [diagnostics](firmware/diagnostics_main.cpp), [Fn layer](firmware/keyboard_core.c), [TrackPoint](firmware/ps2.cpp), [mouse logic](firmware/mouse_core.c)
