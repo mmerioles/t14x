@@ -46,7 +46,7 @@ DISPLAY.update({'Esc':'Esc\nFnLock','F1':'Mute\nF1','F2':'Vol −\nF2','F3':'Vol
 
 class Keyboard(tk.Canvas):
     def __init__(self,parent,on_key,on_mouse):
-        super().__init__(parent,bg='#17191c',highlightthickness=0,height=470)
+        super().__init__(parent,bg='#17191c',highlightthickness=0,height=300)
         self.on_key,self.on_mouse=on_key,on_mouse
         self.results={}; self.active=set(); self.target=None
         self.rectangles={}
@@ -66,9 +66,10 @@ class Keyboard(tk.Canvas):
 
     def draw(self):
         self.delete('all'); self.rectangles={}
-        width=max(self.winfo_width(),600)
+        # Fit both ways: 15 key units across, 6.65 rows (keys plus mouse buttons) down.
+        width,height=max(self.winfo_width(),300),max(self.winfo_height(),150)
         unit=(width-24)/15
-        vertical=min(unit,67)
+        vertical=min(unit,67,(height-24)/6.65)
         ox,oy=12,12
         for key,x,y,w,h in KEYS:
             x1,y1=ox+x*unit,oy+y*vertical
@@ -103,7 +104,6 @@ class Keyboard(tk.Canvas):
         for name,x,w in [('Left',4.3,2),('Middle',6.3,1),('Right',7.3,2)]:
             self.create_rectangle(ox+x*unit,by,ox+(x+w)*unit-4,by+.65*vertical,fill='#292c31',outline='#484b52',tags='mouse')
             self.create_line(ox+x*unit+6,by+.65*vertical-4,ox+(x+w)*unit-10,by+.65*vertical-4,fill='#c83b4a',width=2,tags='mouse')
-        self.configure(height=int(by+.65*vertical+12))
 
     def click(self,event):
         current=self.find_withtag('current')

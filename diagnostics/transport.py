@@ -3,6 +3,7 @@ import json
 import queue
 import threading
 import time
+from .model import WIRING_ID
 
 
 class Connection:
@@ -34,7 +35,7 @@ class Connection:
                     while not self.closed.is_set():
                         now = time.monotonic()
                         if now > deadline:
-                            raise RuntimeError('No diagnostic firmware response. Flash t14_diagnostics.uf2 or reconnect.')
+                            raise RuntimeError('No diagnostic firmware response. Flash t14_diagnostics.hex or reconnect.')
                         if identified and now >= next_ping:
                             device.write(b'PING\n')
                             next_ping = now+0.5
@@ -55,8 +56,8 @@ class Connection:
                             if not isinstance(event,dict):
                                 continue
                             if event.get('type') == 'hello':
-                                if (event.get('protocol') != 1 or event.get('firmware') != 't14-diagnostics'
-                                        or event.get('wiring') != 't14-fpc-v1'):
+                                if (event.get('protocol') != 2 or event.get('firmware') != 't14-diagnostics'
+                                        or event.get('wiring') != WIRING_ID):
                                     raise RuntimeError('Incompatible firmware or wiring version')
                                 identified = True
                             if identified:

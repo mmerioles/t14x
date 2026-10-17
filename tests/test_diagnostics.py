@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 from diagnostics.model import Session, Guide, EXPECTED, ORDER, WIRING, parse_pairs
 from diagnostics.mouse import MouseState
+EXPECTED_CONTACTS={c for pair in EXPECTED.values() for c in pair}
 
 
 class MappingTests(unittest.TestCase):
@@ -61,14 +62,28 @@ class MappingTests(unittest.TestCase):
             self.assertEqual(report['metadata']['mode'],'simulation')
             self.assertEqual(len(report['keys']),84)
 
-    def test_document_and_firmware_agree_with_wiring(self):
-        import re
-        readme=Path('README.md').read_text(encoding='utf-8')
-        rows=re.findall(r'\| [ABC]\d+ \| .*? \| (\d+) \| GP(\d+) \| \d+ \|',readme)
-        self.assertEqual({int(a):int(b) for a,b in rows},WIRING)
-        source=Path('main.c').read_text()
-        arrays=[list(map(int,re.search(rf'{name}\[N\] = \{{(.*?)\}}',source)[1].split(','))) for name in ('fpc','gp')]
-        self.assertEqual(dict(zip(*arrays)),WIRING)
+    def test_wiring_is_complete_and_unique(self):
+        from diagnostics.model import FPC_WIRES, RIBBON_WIRES, BUTTONS, LEDS, TEENSY_LEFT, TEENSY_RIGHT
+        pads=[pin for _,pin in FPC_WIRES.values()]+[pin for *_,pin in RIBBON_WIRES.values()]
+        self.assertEqual(len(pads),len(set(pads)),'two wires share a Teensy pad')
+        self.assertLessEqual(set(pads),set(TEENSY_LEFT+TEENSY_RIGHT))
+        self.assertNotIn(13,pads)  # onboard LED pin
+        self.assertEqual(sorted(fpc for fpc,_ in FPC_WIRES.values()),list(range(6,41)))
+        self.assertEqual(len(WIRING),30)
+        self.assertEqual({c for pair in BUTTONS.values() for c in pair}|set(LEDS.values())|{16},
+                         {fpc for fpc,_ in FPC_WIRES.values()}-set(EXPECTED_CONTACTS))
+        # Bundles A-C keep the FPC ends of the original Pico build.
+        self.assertEqual([FPC_WIRES[f'{b}{i}'][0] for b,n in (('A',10),('B',10),('C',6)) for i in range(1,n+1)],
+                         [11,12,*range(17,41)])
+
+    def test_generated_files_are_current(self):
+        from tools.generate import outputs
+        for path,content in outputs().items():
+            self.assertEqual(path.read_text(encoding='utf-8'),content,f'{path.name}: run python tools/generate.py')
+
+    def test_mouse_buttons_are_scanned(self):
+        from diagnostics.model import BUTTONS
+        for pair in BUTTONS.values(): self.assertEqual(parse_pairs([list(pair)]),{pair})
 
 
 class GuideTests(unittest.TestCase):
@@ -104,26 +119,36 @@ class GuideTests(unittest.TestCase):
 
 
 class MouseTests(unittest.TestCase):
-    def test_movements_and_clicks_require_actual_events(self):
+    def test_trackpoint_directions_need_a_live_trackpoint(self):
         mouse=MouseState()
-        mouse.release('Left'); self.assertFalse(mouse.buttons)
-        for position in [(50,50),(60,50),(40,50),(40,60),(40,40)]: mouse.move(*position)
+        mouse.move(50,0); self.assertFalse(mouse.directions)
+        mouse.status('ready')
+        for dx,dy in [(25,0),(-25,0),(0,25),(0,-25)]: mouse.move(dx,dy)
         self.assertEqual(mouse.directions,{'Left','Right','Up','Down'})
-        for button in ['Left','Middle','Right']:
-            mouse.press(button)
-            self.assertNotIn(button,mouse.buttons)
-            mouse.release(button)
-        self.assertEqual(mouse.buttons,{'Left','Middle','Right'})
-        self.assertEqual(mouse.report()['t14_trackpoint'],'not connected')
-
-    def test_pointer_reentry_does_not_count_a_jump(self):
-        mouse=MouseState(); mouse.move(0,0); mouse.last=None; mouse.move(100,100)
-        self.assertFalse(mouse.directions)
+        self.assertEqual(mouse.report()['trackpoint'],'ready')
 
     def test_small_movements_accumulate(self):
-        mouse=MouseState()
-        for x in range(6): mouse.move(x,0)
+        mouse=MouseState(); mouse.status('ready')
+        for _ in range(4): mouse.move(5,0)
         self.assertEqual(mouse.directions,{'Right'})
+
+    def test_buttons_pass_on_release_only(self):
+        from diagnostics.model import BUTTONS
+        mouse=MouseState()
+        for name,pair in BUTTONS.items():
+            mouse.feed({pair}); self.assertNotIn(name,mouse.buttons)
+            mouse.feed(set()); self.assertIn(name,mouse.buttons)
+        self.assertEqual(mouse.report()['buttons'],['Left','Middle','Right'])
+
+    def test_stopping_does_not_pass_a_held_button(self):
+        from diagnostics.model import BUTTONS
+        mouse=MouseState(); mouse.feed({BUTTONS['Left']}); mouse.cancel(); mouse.feed(set())
+        self.assertFalse(mouse.buttons)
+
+    def test_failed_start_is_reported(self):
+        mouse=MouseState(); mouse.status('starting'); mouse.status('no response')
+        self.assertEqual(mouse.report()['trackpoint'],'no response')
+        mouse.move(50,0); self.assertFalse(mouse.directions)
 
 
 if __name__=='__main__': unittest.main()

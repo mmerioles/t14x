@@ -1,106 +1,57 @@
 # Diagnostics
 
-Flash `t14_diagnostics.uf2` to use this app. The everyday HID keyboard firmware has no serial port.
-Run commands from the repository root.
+Checks every wire from the computer: all 84 keys, the TrackPoint, the three mouse buttons, the four indicator LEDs and the backlight. Flash **`t14_diagnostics.hex`** first (same steps as the [keyboard firmware](../README.md#1--flash-the-firmware)). The keyboard firmware has no serial port.
 
+## Run the app
 
-Use Python 3.10 or newer with Tkinter. Windows and python.org macOS Python
-installers normally include Tk; on Ubuntu/Debian install `python3-tk` if needed.
-From the repository folder:
+From the project folder, run `py run_diagnostics.py` on Windows or `python3 run_diagnostics.py` on macOS/Linux. The first run creates `.venv` and installs [requirements.txt](../requirements.txt); later runs start at once. If Python or Tk is missing, it tells you how to install it. The [README](../README.md#3--test-the-wiring) has step-by-step instructions.
 
-```sh
-python -m venv .venv
-```
+The app finds the Teensy by itself. If it doesn’t, add `--port COM5` (or `/dev/ttyACM0`).
 
-Windows PowerShell:
+## Test
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m diagnostics
-```
+Plug in the Teensy. The app connects, checks the firmware and wiring versions, and starts testing by itself. There’s nothing to click.
 
-macOS/Linux:
+| Tab | What to do | Pass |
+| :--- | :--- | :--- |
+| **Keyboard** | Press and release the key shown at the top. The next one appears by itself | Green outline. Orange means check that key; the app names its two wires. Click a key to test it again |
+| **TrackPoint** | Push the stick up, down, left and right, then click each T14 button | Directions 4/4, Buttons 3/3 |
+| **Lights** | Tick each LED and pick each backlight level | You see the matching light |
 
-```sh
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m diagnostics
-```
+The next key has a white outline and a pressed key turns blue. Results save automatically to `diagnostic-results/` as `report.json`, `keys.csv` and a readable `README.md`. If the Teensy is unplugged or a wire faults, testing picks up again by itself once it’s fixed.
 
-Use `--demo` to try the interface without hardware. Simulation reports are
-marked as such. Use `--port COM3` (or your OS's serial device path) to connect
-automatically. On Linux, your account needs access to the serial device,
-usually through the `dialout` group; reconnect/login after a group change.
+## When something fails
 
-### Test every key
-
-1. Flash `build/t14_diagnostics.uf2` as described below. Select the Pico serial
-   port and click **Connect**. The app checks firmware and wiring versions.
-2. Release every key and click **Start**.
-3. Press and release the key named at the top. The next key appears automatically.
-   There is no timer or extra Next button. A held key waits for release.
-4. **White outline:** next key. **Green:** passed. **Blue:** pressed.
-   **Orange:** check that key. Click any key to retest it.
-5. **Pause** stops the scan. **Start** resumes. **Details** shows pin information
-   when needed. **Open results** loads an earlier saved report.
-6. Click **Save** to save a timestamped folder with `report.json`,
-   `keys.csv`, and a clean Markdown `README.md` containing expected and observed
-   connector pairs. Each completed key test also autosaves those three files
-   under `diagnostic-results/hardware-/<session timestamp>/` relative to the
-   launch directory. Simulation results use a separate `simulation-` folder.
-   Starting again after all keys pass creates a new session and keeps old reports.
-
-### Mouse
-
-The **Mouse** tab includes movement and left/middle/right click checks for the
-computer's pointer. Click **Test computer mouse**, move inside the box, and
-press and release each mouse button. Results explicitly identify the source
-as the computer pointer; Tk cannot identify which physical mouse produced it.
-
-**The T14 TrackPoint and its three buttons are not connected in our current
-wiring and cannot be verified yet.** The smaller ribbon is still disconnected,
-and the mouse-button lines on the 40-pin connector are not among our 26 matrix
-wires. A PC mouse passing this optional test never marks the T14 mouse as passed.
-Direct T14 mouse testing still requires verified wiring, spare I/O or a separate
-controller, and a PS/2 firmware backend. The current firmware only scans keys.
-
-The scanner intentionally tests one key at a time. Multiple simultaneous keys
-can create indirect paths/ghosting in this undioded matrix and cannot establish
-an individual key's wiring. An ambiguous cycle must be released and retested.
-The app does not infer physical key labels: the operator must press the key
-requested. Regional layouts may differ from the US reference.
-
-If a requested key produces no activity, check seating, orientation, and
-continuity of its two expected FPC lines. A consistently wrong pair suggests
-crossed wires or a reference-layout difference. A connection that persists
-with every key released suggests a short or stuck key. An idle scan alone
-cannot distinguish correct wiring from an unplugged/open ribbon.
-
-### Firmware behavior and serial protocol
-
-The firmware starts with all matrix pins as inputs and pull resistors off.
-Scanning begins only on an explicit start command. It pulls other lines up
-weakly and drives exactly one GPIO **low** at a time, scanning both directions
-to find connector pairs without assuming rows or columns. It never drives a
-matrix line high. The debounce period is 20 ms; full state snapshots are sent
-on changes and every 250 ms. USB disconnect or three seconds without a host
-command stops scanning. The GUI also stops accepting tests when scan data is
-stale. This is not protection against externally applied voltage or miswiring.
-
-Commands are ASCII lines at USB serial baud setting 115200:
-
-| Command | Meaning |
+| Symptom | Likely cause |
 | :--- | :--- |
-| `HELLO` | Return firmware, protocol version 1, and wiring ID `t14-fpc-v1` |
-| `START t14-fpc-v1` | Start scanning the exact wiring table below |
-| `PING` | Keep the scan alive; the app sends this every 500 ms |
-| `STOP` | Stop scanning and disable pull resistors |
+| Key gives no activity | One of its two FPC wires: seating, orientation or continuity |
+| Key always shows the same wrong pair | Two wires crossed |
+| “FPC n is stuck low” on Start | That wire touches ground, or sits on the wrong FPC contact |
+| TrackPoint “not responding” | CLK and DATA swapped, RST missing, or no 3.3 V or GND at the TrackPoint. Fix it, then click **Try again** |
+| TrackPoint ready but a direction never passes | Push harder or longer; the threshold is 20 counts |
+| Button never passes | D4 (FPC 9) or that button’s wire |
+| No LED lights | D9 (FPC 16) to 3.3 V |
+| One LED dark | Its resistor or wire, or it’s in backwards on the breakout |
+| No backlight | T6 on VIN, T8 on GND, T7 on pin 33, or the ribbon order |
 
-Responses are newline-delimited JSON, for example:
+The scanner tests one key at a time. Several keys held together can make indirect paths in this matrix, so those tests read *ambiguous*; release and retry. A quiet scan can’t tell good wiring from an unplugged ribbon, so press keys to prove it.
 
-```json
-{"type":"state","pairs":[[29,34]]}
-```
+## How the firmware scans
 
-That pair corresponds to Esc in the reference. An empty `pairs` array means
-all keys are released. `fault`, `error`, and `stopped` messages explain failures.
+All matrix and button lines start as inputs with pulls off. When testing starts, each line gets a weak pull-up and exactly one line at a time is driven **low**, so pairs are found without assuming rows or columns. No matrix or button line is ever driven high. A change counts after 20 ms; full snapshots go out on change and every 250 ms. Unplugging USB, three seconds without a host message, a `STOP` command, a fault or an error switches off scanning, lights and the TrackPoint. That protects against mistakes in software, not against wrong voltages.
 
+### Serial protocol (version 2)
+
+ASCII command lines in; one JSON object per line out.
+
+| Command | Reply |
+| :--- | :--- |
+| `HELLO` | `{"type":"hello","protocol":2,"firmware":"t14-diagnostics","board":"teensy41","wiring":"t14-teensy41-v1"}` |
+| `START t14-teensy41-v1` | `started`, then `{"type":"state","pairs":[[29,34]]}` snapshots (FPC contact pairs) |
+| `PING` | `pong`. The app sends one every 500 ms |
+| `TRACKPOINT` | `trackpoint` with `starting`, then `ready` or `no response`; then `{"type":"motion","dx":3,"dy":-2}` (screen directions) |
+| `LED 0`–`LED 15` | `leds`. Bits: 1 Caps Lock, 2 Mic mute, 4 Speaker mute, 8 Fn Lock |
+| `BACKLIGHT 0`–`2` | `backlight`. Off, low, high |
+| `STOP` | `stopped` |
+
+`[29,34]` is Esc. Mouse buttons appear as `[8,9]` left, `[6,9]` middle and `[7,9]` right. `fault`, `error` and `stopped` explain anything that ends a test.

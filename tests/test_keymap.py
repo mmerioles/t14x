@@ -2,7 +2,7 @@ import copy
 import json
 import unittest
 from pathlib import Path
-from tools.generate_keymap import generated,CODES
+from tools.generate import generated,CODES
 from diagnostics.model import EXPECTED
 
 
@@ -21,6 +21,11 @@ class KeymapTests(unittest.TestCase):
             if mode=='status': report['keys']['A']['status']='untested'
             else: report['keys']['A']['observed']=[[11,12]]
             with self.assertRaises(ValueError): generated(report)
+
+    def test_pico_measurements_still_apply(self):
+        # The saved report was measured on the Pico build; FPC pairs are board-independent.
+        self.assertEqual(self.report['wiring']['34'],19)
+        generated(self.report)
 
     def test_simulation_cannot_generate_production_map(self):
         self.report['metadata']['mode']='simulation'
